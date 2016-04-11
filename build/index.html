@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <title>ngAdmin Restify</title>
+    <link rel="stylesheet" href="node_modules/ng-admin/build/ng-admin.min.css">
+  </head>
+  <body ng-app="myApp">
+    <div ui-view></div>
+
+    <script src="node_modules/ng-admin/build/ng-admin.min.js"></script>
+    <script src="app.js"></script>
+
+    <script type="text/javascript">
+
+        angular
+            .module('myApp', ['ng-admin-restify'])
+            .config(function(ngAdminRestifyProvider) {
+                var options = {
+                    site: 'My Blogs',
+                    url: '/v1/',
+                    entities: {
+                        post: {
+                            entity: 'post',
+                            model: {
+                                id: { type: 'id' },
+                                title: { type: 'string', required: true },
+                                author: 'string',
+                            },
+                            id: 'id',
+                            fields: {},
+                            default: {
+                                fields: [ 'id', 'title', 'author' ],
+                            },
+                            list: {},
+                            creation: {},
+                            edition: {},
+                            show: {
+                                title: 'title'
+                            },
+                            search: {
+                                fields: ['title']
+                            },
+                        },
+                        comment: {
+                            entity: 'comment',
+                            model: {
+                                id: { type: 'id' },
+                                postId: { type: 'id', ref: 'post' },
+                                body: { type: 'string', required: true },
+                            },
+                            id: 'id',
+                            fields: {
+                                postId: {
+                                    field: 'postId',
+                                    type: 'reference',
+                                    targetEntity: 'post',
+                                    targetField: 'title',
+                                    pinned: true
+                                }
+                            },
+                            default: {
+                                fields: [ 'id', 'postId', 'body' ],
+                            },
+                            list: {},
+                            creation: {},
+                            edition: {},
+                            show: {
+                                title: 'body'
+                            },
+                            search: {
+                                fields: ['body']
+                            },
+                        }
+                    }
+                };
+                var app = ngAdminRestifyProvider.configure(options);
+            })
+        ;
+
+    </script>
+  </body>
+</html>
