@@ -29,20 +29,32 @@
                                 id: { type: 'integer' },
                                 title: { type: 'string', required: true },
                                 author: 'string',
+                                comments: { type: 'referenced_list' },
                             },
                             id: 'id',
-                            fields: {},
+                            fields: {
+                                comments: {
+                                    type: 'referenced_list',
+                                    targetEntity: 'comment',
+                                    targetReferenceField: 'postId',
+                                    targetFields: {
+                                        'ID': 'id',
+                                        'Comment': 'body',
+                                    },
+                                    sort: {
+                                        field: 'id',
+                                        dir: 'DESC'
+                                    }
+                                },
+                            },
                             default: {
-                                fields: [ 'id', 'title', 'author' ],
+                                fields: [ 'id', 'title', 'author', 'comments' ],
                             },
                             list: {},
                             creation: {},
                             edition: {},
                             show: {
                                 title: 'title',
-                                fields: [
-                                    'id', 'title', 'author'
-                                ]
                             },
                             search: {
                                 fields: ['id']

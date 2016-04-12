@@ -70,6 +70,7 @@ provider.restangularProvider = function(RestangularProvider) {
                         break;
                     case 'q':
                     case 'filter':
+                        params[filter] = {};
                         params[filter][searchField] = params._filters[searchField];
                         break;
                     default:
