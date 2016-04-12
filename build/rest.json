@@ -4,6 +4,11 @@
       "id": 1,
       "title": "json-server",
       "author": "typicode"
+    },
+    {
+      "id": 2,
+      "title": "how about that",
+      "author": "Fang"
     }
   ],
   "comment": [
@@ -11,6 +16,11 @@
       "id": 1,
       "body": "some comment",
       "postId": 1
+    },
+    {
+      "id": 2,
+      "postId": 2,
+      "body": "haha"
     }
   ],
   "profile": {

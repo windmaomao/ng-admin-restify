@@ -2,7 +2,7 @@
   "name": "ng-admin-restify-build",
   "version": "0.1.0",
   "author": "Fang Jin",
-  "license": "ISC",
+  "license": "MIT License",
   "dependencies": {
     "ng-admin": "^0.9.1"
   }

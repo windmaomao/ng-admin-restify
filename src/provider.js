@@ -53,6 +53,7 @@ provider.restangularProvider = function(RestangularProvider) {
     RestangularProvider.addFullRequestInterceptor(function(element, operation, what, url, headers, params, httpConfig) {
         // console.log(params);
         var entity = ngAdmin.options.entities[what];
+        var filter = ngAdmin.options.rest.filter || 'flat';
         // List view
         if (operation == 'getList') {
             // search field
@@ -61,11 +62,23 @@ provider.restangularProvider = function(RestangularProvider) {
                 searchField = entity.search.fields[0];
             }
             if (("_filters" in params) && (searchField in params._filters)) {
-                params.q = {};
-                params.q[searchField] = { $regex: params._filters[searchField] }
+                // params.filter = {};
+                // params.q[searchField] = { $regex: params._filters[searchField] }
+                switch (filter) {
+                    case 'flat':
+                        params[searchField] = params._filters[searchField];
+                        break;
+                    case 'q':
+                    case 'filter':
+                        params[filter][searchField] = params._filters[searchField];
+                        break;
+                    default:
+                        break;
+                }
             }
-            // params.q = { NAME: { $regex: params._filters.NAME } };
-            delete params._filters;
+            if (filter) {
+                delete params._filters;
+            }
 
             // pagination
             params.pageSize = params._perPage;

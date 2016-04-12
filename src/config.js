@@ -10,5 +10,9 @@
 module.exports = {
     site: 'ngAdmin Restify',
     url: '/v1/',
+    rest: {
+        url: '/v1/',
+        filter: ''
+    },
     entities: {},
 };

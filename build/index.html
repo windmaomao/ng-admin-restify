@@ -18,11 +18,15 @@
                 var options = {
                     site: 'My Blogs',
                     url: '/v1/',
+                    rest: {
+                        url: '/v1/',
+                        filter: 'flat'
+                    },
                     entities: {
                         post: {
                             entity: 'post',
                             model: {
-                                id: { type: 'id' },
+                                id: { type: 'integer' },
                                 title: { type: 'string', required: true },
                                 author: 'string',
                             },
@@ -35,16 +39,19 @@
                             creation: {},
                             edition: {},
                             show: {
-                                title: 'title'
+                                title: 'title',
+                                fields: [
+                                    'id', 'title', 'author'
+                                ]
                             },
                             search: {
-                                fields: ['title']
+                                fields: ['id']
                             },
                         },
                         comment: {
                             entity: 'comment',
                             model: {
-                                id: { type: 'id' },
+                                id: { type: 'integer' },
                                 postId: { type: 'id', ref: 'post' },
                                 body: { type: 'string', required: true },
                             },
@@ -68,7 +75,7 @@
                                 title: 'body'
                             },
                             search: {
-                                fields: ['body']
+                                fields: ['postId']
                             },
                         }
                     }

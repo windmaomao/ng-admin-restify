@@ -7,6 +7,8 @@
  * @author Fang Jin <fang-a.jin@db.com>
 */
 
+var capitalize = require("underscore.string/capitalize");
+
 var ngAdmin = {};
 
 var admin;
@@ -268,8 +270,9 @@ ngAdmin.setupEntities = function(opts) {
         var showView = entity.showView()
             .fields(ngAdmin.ngaFieldsFromModel(entityName, showFields))
         ;
+
         if (op.show.title) {
-            showView.title('{{ entry.values.' + op.show.title + ' }}');
+            showView.title(capitalize(entityName) + ': {{ entry.values.' + op.show.title + ' }}');
         }
     });
 };

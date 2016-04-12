@@ -73,7 +73,7 @@
 	*/
 
 	var ngAdmin = __webpack_require__(2);
-	var defaultOptions = __webpack_require__(3);
+	var defaultOptions = __webpack_require__(5);
 
 	var provider = {};
 
@@ -120,6 +120,7 @@
 	    RestangularProvider.addFullRequestInterceptor(function(element, operation, what, url, headers, params, httpConfig) {
 	        // console.log(params);
 	        var entity = ngAdmin.options.entities[what];
+	        var filter = ngAdmin.options.rest.filter || 'flat';
 	        // List view
 	        if (operation == 'getList') {
 	            // search field
@@ -128,11 +129,23 @@
 	                searchField = entity.search.fields[0];
 	            }
 	            if (("_filters" in params) && (searchField in params._filters)) {
-	                params.q = {};
-	                params.q[searchField] = { $regex: params._filters[searchField] }
+	                // params.filter = {};
+	                // params.q[searchField] = { $regex: params._filters[searchField] }
+	                switch (filter) {
+	                    case 'flat':
+	                        params[searchField] = params._filters[searchField];
+	                        break;
+	                    case 'q':
+	                    case 'filter':
+	                        params[filter][searchField] = params._filters[searchField];
+	                        break;
+	                    default:
+	                        break;
+	                }
 	            }
-	            // params.q = { NAME: { $regex: params._filters.NAME } };
-	            delete params._filters;
+	            if (filter) {
+	                delete params._filters;
+	            }
 
 	            // pagination
 	            params.pageSize = params._perPage;
@@ -157,7 +170,7 @@
 
 /***/ },
 /* 2 */
-/***/ function(module, exports) {
+/***/ function(module, exports, __webpack_require__) {
 
 	/**
 	 * NG Admin module
@@ -167,6 +180,8 @@
 	 * @date 03/29/16
 	 * @author Fang Jin <fang-a.jin@db.com>
 	*/
+
+	var capitalize = __webpack_require__(3);
 
 	var ngAdmin = {};
 
@@ -429,8 +444,9 @@
 	        var showView = entity.showView()
 	            .fields(ngAdmin.ngaFieldsFromModel(entityName, showFields))
 	        ;
+
 	        if (op.show.title) {
-	            showView.title('{{ entry.values.' + op.show.title + ' }}');
+	            showView.title(capitalize(entityName) + ': {{ entry.values.' + op.show.title + ' }}');
 	        }
 	    });
 	};
@@ -467,6 +483,33 @@
 
 /***/ },
 /* 3 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var makeString = __webpack_require__(4);
+
+	module.exports = function capitalize(str, lowercaseRest) {
+	  str = makeString(str);
+	  var remainingChars = !lowercaseRest ? str.slice(1) : str.slice(1).toLowerCase();
+
+	  return str.charAt(0).toUpperCase() + remainingChars;
+	};
+
+
+/***/ },
+/* 4 */
+/***/ function(module, exports) {
+
+	/**
+	 * Ensure some object is a coerced to a string
+	 **/
+	module.exports = function makeString(object) {
+	  if (object == null) return '';
+	  return '' + object;
+	};
+
+
+/***/ },
+/* 5 */
 /***/ function(module, exports) {
 
 	/**
@@ -481,6 +524,10 @@
 	module.exports = {
 	    site: 'ngAdmin Restify',
 	    url: '/v1/',
+	    rest: {
+	        url: '/v1/',
+	        filter: ''
+	    },
 	    entities: {},
 	};
 
