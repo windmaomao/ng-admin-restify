@@ -51,9 +51,12 @@ provider.ngAdminRestifyProvider = function(NgAdminConfigurationProvider) {
 
 provider.restangularProvider = function(RestangularProvider) {
     RestangularProvider.addFullRequestInterceptor(function(element, operation, what, url, headers, params, httpConfig) {
-        // console.log(params);
+        console.log(params);
         var entity = ngAdmin.options.entities[what];
         var filter = ngAdmin.options.rest.filter || 'flat';
+        var page = ngAdmin.options.rest.page || { page: 'p', limit: 'pageSize' };
+        var sort = ngAdmin.options.rest.sort || { field: 'sort', plus: true };
+
         // List view
         if (operation == 'getList') {
             // search field
@@ -81,19 +84,45 @@ provider.restangularProvider = function(RestangularProvider) {
                 delete params._filters;
             }
 
-            // pagination
-            params.pageSize = params._perPage;
-            delete params._perPage;
-            params.p = params._page - 1;
-            delete params._page;
+            // pagination, use page or start/end
+            if (page.page) {
+                if (params._perPage) {
+                    params[page.limit] = params._perPage;
+                    delete params._perPage;
+                }
+                if (params._page) {
+                    params[page.page] = params._page - 1;
+                    delete params._page;
+                }
+            } else {
+                if (params._perPage) {
+                    params[page.start] = (params._page - 1) * params._perPage;
+                    params[page.end] = params[page.start] + params._perPage;
+                    delete params._perPage;
+                    delete params._page;
+                }
+            }
 
             // sort
-            params.sort = params._sortField;
-            if (params._sortDir !== 'ASC') {
-                params.sort = '-' + params.sort;
+            if (sort.plus) {
+                if (params._sortField) {
+                    params[sort.field] = params._sortField;
+                    if (params._sortDir !== 'ASC') {
+                        params.sort = '-' + params.sort;
+                    }
+                    delete params._sortField;
+                    delete params._sortDir;
+                }
+            } else {
+                if (params._sortField) {
+                    params[sort.field] = params._sortField;
+                    delete params._sortField;
+                }
+                if (params._sortDir) {
+                    params[sort.order] = params._sortDir;
+                    delete params._sortDir;
+                }
             }
-            delete params._sortField;
-            delete params._sortDir;
         }
         return { params: params };
     });

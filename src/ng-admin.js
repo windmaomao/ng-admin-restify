@@ -104,10 +104,6 @@ var assembleFields = function(fields, editing) {
                         .targetReferenceField(field.targetReferenceField)
                         .targetFields(tFields)
                     ;
-                    if (field.sort) {
-                        nf.sortField(field.sort.field);
-                        nf.sortDir(field.sort.dir);
-                    }
                     break;
                 case 'reference_many':
                     nf = nga.field(field.field, field.type)
@@ -116,10 +112,6 @@ var assembleFields = function(fields, editing) {
                         // .detailLinkRoute('show')
                         .perPage(0)
                     ;
-                    if (field.sort) {
-                        nf.sortField(field.sort.field);
-                        nf.sortDir(field.sort.dir);
-                    }
                     break;
                 case 'id':
                 case 'date':
@@ -129,6 +121,15 @@ var assembleFields = function(fields, editing) {
                     nf = nga.field(field.field);
                     break;
             };
+            // add page
+            if (field.perPage) {
+                nf.perPage(field.perPage);
+            }
+            // add sort
+            if (field.sort) {
+                nf.sortField(field.sort.field);
+                nf.sortDir(field.sort.dir);
+            }
             // add field label
             if (field.label) {
                 nf.label(field.label);
