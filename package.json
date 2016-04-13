@@ -1,50 +1,21 @@
 {
-  "_args": [
-    [
-      "ng-admin-restify",
-      "/Users/fjin/Downloads/npm"
-    ]
-  ],
-  "_from": "ng-admin-restify@latest",
-  "_id": "ng-admin-restify@0.1.2",
-  "_inCache": true,
-  "_installable": true,
-  "_location": "/ng-admin-restify",
-  "_nodeVersion": "4.0.0",
-  "_npmOperationalInternal": {
-    "host": "packages-12-west.internal.npmjs.com",
-    "tmp": "tmp/ng-admin-restify-0.1.2.tgz_1460480822171_0.3682349605951458"
-  },
-  "_npmUser": {
-    "email": "windmaomao@gmail.com",
-    "name": "windmaomao"
-  },
-  "_npmVersion": "2.14.2",
-  "_phantomChildren": {},
-  "_requested": {
-    "name": "ng-admin-restify",
-    "raw": "ng-admin-restify",
-    "rawSpec": "",
-    "scope": null,
-    "spec": "latest",
-    "type": "tag"
-  },
-  "_requiredBy": [
-    "/"
-  ],
-  "_resolved": "https://registry.npmjs.org/ng-admin-restify/-/ng-admin-restify-0.1.2.tgz",
-  "_shasum": "0d9d2955432c96cd21d9c3c8e22cbd23fb9c5e91",
-  "_shrinkwrap": null,
-  "_spec": "ng-admin-restify",
-  "_where": "/Users/fjin/Downloads/npm",
+  "name": "ng-admin-restify",
+  "version": "0.1.3",
+  "description": "Wire restify server with ng-admin configuration file",
   "author": {
     "name": "Fang Jin"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/windmaomao/ng-admin-restify.git"
   },
   "dependencies": {
     "ng-admin": "^0.9.1",
     "underscore.string": "^3.3.4"
   },
-  "description": "Wire restify server with ng-admin configuration file",
   "devDependencies": {
     "del": "~0.1.1",
     "gulp": "^3.9.1",
@@ -56,25 +27,12 @@
     "raw-loader": "^0.5.1",
     "webpack-stream": "^3.1.0"
   },
-  "directories": {},
-  "dist": {
-    "shasum": "0d9d2955432c96cd21d9c3c8e22cbd23fb9c5e91",
-    "tarball": "https://registry.npmjs.org/ng-admin-restify/-/ng-admin-restify-0.1.2.tgz"
-  },
-  "gitHead": "9c75ec5d6ac981eb301b77ff47494881eced527b",
-  "license": "MIT License",
+  "license": "MIT",
   "main": "index.js",
   "maintainers": [
     {
       "name": "windmaomao",
       "email": "windmaomao@gmail.com"
     }
-  ],
-  "name": "ng-admin-restify",
-  "optionalDependencies": {},
-  "readme": "ERROR: No README data found!",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "version": "0.1.3"
+  ]
 }
