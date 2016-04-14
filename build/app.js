@@ -125,31 +125,31 @@
 	        var sort = ngAdmin.options.rest.sort || { field: 'sort', plus: true };
 
 	        // List view
-	        if ((operation == 'getList') && ("_filters" in params)) {
-	            angular.forEach(entity.search.fields, function(searchField) {
-	                // search field
-	                // var searchField = '_id';
-	                // if (entity.search.fields.length) {
-	                //     searchField = entity.search.fields[0];
-	                // }
-	                if (searchField in params._filters) {
-	                    // params.filter = {};
-	                    // params.q[searchField] = { $regex: params._filters[searchField] }
-	                    switch (filter) {
-	                        case 'flat':
-	                            params[searchField] = params._filters[searchField];
-	                            break;
-	                        case 'q':
-	                        case 'filter':
-	                            params[filter] = {};
-	                            params[filter][searchField] = params._filters[searchField];
-	                            break;
-	                        default:
-	                            break;
+	        if (operation == 'getList') {
+	            if ("_filters" in params) {
+	                angular.forEach(entity.search.fields, function(searchField) {
+	                    // search field
+	                    // var searchField = '_id';
+	                    // if (entity.search.fields.length) {
+	                    //     searchField = entity.search.fields[0];
+	                    // }
+	                    if (searchField in params._filters) {
+	                        // params.filter = {};
+	                        // params.q[searchField] = { $regex: params._filters[searchField] }
+	                        switch (filter) {
+	                            case 'flat':
+	                                params[searchField] = params._filters[searchField];
+	                                break;
+	                            case 'q':
+	                            case 'filter':
+	                                params[filter] = {};
+	                                params[filter][searchField] = params._filters[searchField];
+	                                break;
+	                            default:
+	                                break;
+	                        }
 	                    }
-	                }
-	            });
-	            if (filter) {
+	                });
 	                delete params._filters;
 	            }
 
