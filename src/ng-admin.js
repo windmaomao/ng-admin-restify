@@ -96,9 +96,11 @@ var assembleFields = function(fields, editing) {
                     break;
                 case 'referenced_list':
                     var tFields = [];
-                    _.each(field.targetFields, function(value, key) {
-                        tFields.push(nga.field(value).label(key));
-                    });
+                    if (field.targetFields) {
+                        tFields = ngAdmin.ngaFieldsFromModel(
+                            field.targetEntity, field.targetFields
+                        );
+                    }
                     nf = nga.field(field.field, field.type)
                         .targetEntity(entities[field.targetEntity])
                         .targetReferenceField(field.targetReferenceField)

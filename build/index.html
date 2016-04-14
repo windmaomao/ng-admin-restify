@@ -48,10 +48,7 @@
                                     type: 'referenced_list',
                                     targetEntity: 'comment',
                                     targetReferenceField: 'postId',
-                                    targetFields: {
-                                        'ID': 'id',
-                                        'Comment': 'body',
-                                    },
+                                    targetFields: ['id','body'],
                                     sort: {
                                         field: 'id',
                                         dir: 'DESC'

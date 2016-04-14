@@ -118,7 +118,7 @@
 
 	provider.restangularProvider = function(RestangularProvider) {
 	    RestangularProvider.addFullRequestInterceptor(function(element, operation, what, url, headers, params, httpConfig) {
-	        console.log(params);
+	        // console.log(params);
 	        var entity = ngAdmin.options.entities[what];
 	        var filter = ngAdmin.options.rest.filter || 'flat';
 	        var page = ngAdmin.options.rest.page || { page: 'p', limit: 'pageSize' };
@@ -300,9 +300,11 @@
 	                    break;
 	                case 'referenced_list':
 	                    var tFields = [];
-	                    _.each(field.targetFields, function(value, key) {
-	                        tFields.push(nga.field(value).label(key));
-	                    });
+	                    if (field.targetFields) {
+	                        tFields = ngAdmin.ngaFieldsFromModel(
+	                            field.targetEntity, field.targetFields
+	                        );
+	                    }
 	                    nf = nga.field(field.field, field.type)
 	                        .targetEntity(entities[field.targetEntity])
 	                        .targetReferenceField(field.targetReferenceField)

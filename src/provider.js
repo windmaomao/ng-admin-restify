@@ -51,7 +51,7 @@ provider.ngAdminRestifyProvider = function(NgAdminConfigurationProvider) {
 
 provider.restangularProvider = function(RestangularProvider) {
     RestangularProvider.addFullRequestInterceptor(function(element, operation, what, url, headers, params, httpConfig) {
-        console.log(params);
+        // console.log(params);
         var entity = ngAdmin.options.entities[what];
         var filter = ngAdmin.options.rest.filter || 'flat';
         var page = ngAdmin.options.rest.page || { page: 'p', limit: 'pageSize' };
