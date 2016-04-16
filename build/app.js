@@ -444,12 +444,13 @@
 	        var showFields = op.show.fields || defaultFields;
 	        var creationFields = op.creation.fields || defaultFields;
 	        var searchFields = op.search.fields || id;
+	        var listActions = op.list.actions || ['show', 'edit'];
 
 	        var entity = entities[entityName];
 
 	        var listView = entity.listView()
 	            .fields(ngAdmin.ngaFieldsFromModel(entityName, listFields))
-	            .listActions(['show', 'edit'])
+	            .listActions(listActions)
 	            // .filters(ngAdmin.assembleSearchFields(nga, searchFields))
 	            .filters(ngAdmin.ngaFieldsFromModel(entityName, searchFields))
 	        ;
