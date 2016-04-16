@@ -3,12 +3,19 @@
     {
       "id": 1,
       "title": "json-server",
-      "author": "typicode"
+      "author": "typicode",
+      "tags": [
+        2,
+        1
+      ]
     },
     {
       "id": 2,
       "title": "how about that",
-      "author": "Fang"
+      "author": "Fang",
+      "tags": [
+        2
+      ]
     }
   ],
   "comment": [
@@ -21,6 +28,16 @@
       "id": 2,
       "postId": 2,
       "body": "haha"
+    }
+  ],
+  "tag": [
+    {
+      "id": 1,
+      "name": "vocation"
+    },
+    {
+      "id": 2,
+      "name": "utility"
     }
   ],
   "profile": {

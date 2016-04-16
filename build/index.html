@@ -40,7 +40,8 @@
                                 id: { type: 'integer' },
                                 title: { type: 'string', required: true },
                                 author: 'string',
-                                comments: { type: 'referenced_list' },
+                                comments: { type: '' },
+                                tags: { type: '' },
                             },
                             id: 'id',
                             fields: {
@@ -58,11 +59,23 @@
                                         dir: 'DESC'
                                     }
                                 },
+                                tags: {
+                                    field: 'tags',
+                                    type: 'reference_many',
+                                    label: 'Tags',
+                                    targetEntity: 'tag',
+                                    targetField: 'name',
+                                    sort: {
+                                        field: 'name',
+                                        dir: 'ASC'
+                                    }
+                                },
                             },
                             default: {
-                                fields: [ 'id', 'title', 'author', 'comments' ],
+                                fields: [ 'id', 'title', 'author', 'comments', 'tags' ],
                             },
                             list: {
+                                fields: [ 'id', 'title', 'author', 'tags'],
                                 actions: ['edit']
                             },
                             creation: {},
@@ -107,6 +120,27 @@
                             },
                             search: {
                                 fields: ['id', 'postId']
+                            },
+                        },
+                        tag: {
+                            entity: 'tag',
+                            model: {
+                                id: { type: 'integer' },
+                                name: { type: 'string', required: true },
+                            },
+                            id: 'id',
+                            fields: {},
+                            default: {
+                                fields: ['id', 'name']
+                            },
+                            list: {},
+                            creation: {},
+                            edition: {},
+                            show: {
+                                title: 'name'
+                            },
+                            search: {
+                                fields: ['id', 'name']
                             },
                         }
                     }
