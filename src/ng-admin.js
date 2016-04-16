@@ -72,8 +72,9 @@ var assembleFields = function(fields, editing) {
                     if (!editing) {
                         switch (field.format) {
                             case 'url':
+                                var caption = field.caption || 'Link';
                                 nf = nga.field(field.field, 'template')
-                                    .template('<a href="{{ entry.values.url }}" target="_blank" ng-show="entry.values.url">Link</a>')
+                                    .template('<a href="{{ entry.values.url }}" target="_blank" ng-show="entry.values.url">' + caption + '</a>')
                                 ;
                                 break;
                             default:
