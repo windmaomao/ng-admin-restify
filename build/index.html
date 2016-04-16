@@ -40,6 +40,7 @@
                                 id: { type: 'integer' },
                                 title: { type: 'string', required: true },
                                 author: 'string',
+                                url: 'string',
                                 comments: { type: '' },
                                 tags: { type: '' },
                             },
@@ -70,12 +71,17 @@
                                         dir: 'ASC'
                                     }
                                 },
+                                url: {
+                                    field: 'url',
+                                    type: 'string',
+                                    format: 'url'
+                                }
                             },
                             default: {
-                                fields: [ 'id', 'title', 'author', 'comments', 'tags' ],
+                                fields: [ 'id', 'title', 'author', 'comments', 'tags', 'url' ],
                             },
                             list: {
-                                fields: [ 'id', 'title', 'author', 'tags'],
+                                fields: [ 'id', 'title', 'author', 'tags', 'url'],
                                 actions: ['edit']
                             },
                             creation: {},

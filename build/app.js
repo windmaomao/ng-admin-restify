@@ -274,6 +274,21 @@
 	                    nf = nga.field(field.field, field.type)
 	                        .format(field.format)
 	                    break;
+	                case 'string':
+	                    if (!editing) {
+	                        switch (field.format) {
+	                            case 'url':
+	                                nf = nga.field(field.field, 'template')
+	                                    .template('<a href="{{ entry.values.url }}" target="_blank" ng-show="entry.values.url">Link</a>')
+	                                ;
+	                                break;
+	                            default:
+	                                nf = nga.field(field.field);
+	                        }
+	                    } else {
+	                        nf = nga.field(field.field);
+	                    }
+	                    break;
 	                case 'integer':
 	                    if (!editing) {
 	                        switch (field.format) {
@@ -324,7 +339,7 @@
 	                case 'id':
 	                case 'date':
 	                case 'datetime':
-	                case 'string':
+	                // case 'string':
 	                default:
 	                    nf = nga.field(field.field);
 	                    break;
