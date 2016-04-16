@@ -44,6 +44,10 @@
                             },
                             id: 'id',
                             fields: {
+                                title: {
+                                    type: 'string',
+                                    detailRoute: 'show'
+                                },
                                 comments: {
                                     type: 'referenced_list',
                                     targetEntity: 'comment',
@@ -88,7 +92,7 @@
                                     },
                                     perPage: 200,
                                     pinned: true
-                                }
+                                },
                             },
                             default: {
                                 fields: [ 'id', 'postId', 'body' ],

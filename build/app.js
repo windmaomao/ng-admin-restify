@@ -342,6 +342,11 @@
 	            if (field.label) {
 	                nf.label(field.label);
 	            }
+	            // add detail link
+	            if (field.detailRoute) {
+	                nf.isDetailLink(true);
+	                nf.detailLinkRoute(field.detailRoute);
+	            }
 	            // set field pinned
 	            if (field.pinned) {
 	                nf.pinned(true);
