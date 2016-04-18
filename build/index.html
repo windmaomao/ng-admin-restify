@@ -111,10 +111,12 @@
                                 id: { type: 'integer' },
                                 postId: { type: 'id', ref: 'post' },
                                 body: { type: 'string', required: true },
+                                createdAt: { type: 'date' }
                             },
                             id: 'id',
                             fields: {
                                 postId: {
+                                    label: 'Post',
                                     field: 'postId',
                                     type: 'reference',
                                     targetEntity: 'post',
@@ -126,9 +128,14 @@
                                     perPage: 200,
                                     pinned: true
                                 },
+                                createdAt: {
+                                    label: 'Created',
+                                    type: 'datetime',
+                                    format: 'date'
+                                },
                             },
                             default: {
-                                fields: [ 'id', 'postId', 'body' ],
+                                fields: [ 'id', 'postId', 'body', 'createdAt' ],
                             },
                             list: {},
                             creation: {},

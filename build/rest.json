@@ -26,12 +26,14 @@
     {
       "id": 1,
       "body": "some comment",
-      "postId": 1
+      "postId": 1,
+      "createdAt": "2016-04-17T23:01:11.131Z"
     },
     {
       "id": 2,
       "postId": 2,
-      "body": "haha"
+      "body": "haha",
+      "createdAt": "2016-04-17T23:01:11.131Z"
     }
   ],
   "tag": [

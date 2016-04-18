@@ -108,6 +108,27 @@ var assembleFields = function(fields, editing) {
                         nf = nga.field(field.field);
                     }
                     break;
+                case 'date':
+                case 'datetime':
+                    if (!editing) {
+                        switch (field.format) {
+                            case 'date':
+                                nf = nga.field(field.field, field.type)
+                                    .format('yyyy-MM-dd')
+                                ;
+                                break;
+                            case 'datetime':
+                                nf = nga.field(field.field, field.type)
+                                    .format('yyyy-MM-dd HH:mm:ss')
+                                ;
+                                break;
+                            default:
+                                nf = nga.field(field.field);
+                        }
+                    } else {
+                        nf = nga.field(field.field);
+                    }
+                    break;
                 case 'reference':
                     nf = nga.field(field.field, field.type)
                         .targetEntity(entities[field.targetEntity])
@@ -137,8 +158,6 @@ var assembleFields = function(fields, editing) {
                     ;
                     break;
                 case 'id':
-                case 'date':
-                case 'datetime':
                 // case 'string':
                 default:
                     nf = nga.field(field.field);
