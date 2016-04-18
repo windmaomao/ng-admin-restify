@@ -5,6 +5,7 @@
       "title": "json-server",
       "author": "typicode",
       "url": "",
+      "imageId": 1,
       "tags": [
         2,
         1
@@ -15,6 +16,7 @@
       "title": "how about that",
       "author": "Fang",
       "url": "http://google.com",
+      "imageId": 1,
       "tags": [
         2
       ]

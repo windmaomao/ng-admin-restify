@@ -43,6 +43,7 @@
                                 url: 'string',
                                 comments: { type: '' },
                                 tags: { type: '' },
+                                images: { type: '' },
                             },
                             id: 'id',
                             fields: {
@@ -77,9 +78,19 @@
                                     format: 'url',
                                     caption: 'Go'
                                 },
+                                images: {
+                                    type: 'referenced_list',
+                                    targetEntity: 'image',
+                                    targetReferenceField: 'postId',
+                                    targetFields: ['id','caption','name'],
+                                    sort: {
+                                        field: 'id',
+                                        dir: 'DESC'
+                                    }
+                                },
                             },
                             default: {
-                                fields: [ 'id', 'title', 'author', 'comments', 'tags', 'url' ],
+                                fields: [ 'id', 'title', 'author', 'comments', 'tags', 'url', 'images' ],
                             },
                             list: {
                                 fields: [ 'id', 'title', 'author', 'tags', 'url'],
