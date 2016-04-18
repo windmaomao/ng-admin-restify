@@ -77,6 +77,11 @@ var assembleFields = function(fields, editing) {
                                     .template('<a href="{{ entry.values.url }}" target="_blank" ng-show="entry.values.url">' + caption + '</a>')
                                 ;
                                 break;
+                            case 'image':
+                                nf = nga.field(field.field, 'template')
+                                    .template('<img ng-src="' + field.url + '{{ entry.values.name }}"' + ' width="' + field.width + 'px" />')
+                                ;
+                                break;
                             default:
                                 nf = nga.field(field.field);
                         }

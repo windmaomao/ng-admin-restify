@@ -76,7 +76,7 @@
                                     type: 'string',
                                     format: 'url',
                                     caption: 'Go'
-                                }
+                                },
                             },
                             default: {
                                 fields: [ 'id', 'title', 'author', 'comments', 'tags', 'url' ],
@@ -139,6 +139,36 @@
                             fields: {},
                             default: {
                                 fields: ['id', 'name']
+                            },
+                            list: {},
+                            creation: {},
+                            edition: {},
+                            show: {
+                                title: 'name'
+                            },
+                            search: {
+                                fields: ['id', 'name']
+                            },
+                        },
+                        image: {
+                            entity: 'image',
+                            model: {
+                                id: { type: 'integer' },
+                                name: { type: 'string', required: true },
+                                caption: 'string'
+                            },
+                            id: 'id',
+                            fields: {
+                                name: {
+                                    field: 'name',
+                                    type: 'string',
+                                    format: 'image',
+                                    url: 'https://s3-us-west-1.amazonaws.com/qplot-showcase/',
+                                    width: 200
+                                }
+                            },
+                            default: {
+                                fields: ['id', 'name', 'caption']
                             },
                             list: {},
                             creation: {},

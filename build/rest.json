@@ -42,6 +42,13 @@
       "name": "utility"
     }
   ],
+  "image": [
+    {
+      "id": 1,
+      "name": "nea_mockup.png",
+      "caption": "NEA Mockup Design"
+    }
+  ],
   "profile": {
     "name": "typicode"
   }
