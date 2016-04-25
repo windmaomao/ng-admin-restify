@@ -226,7 +226,7 @@ You basically reference `ng-admin` and `ng-admin-restify` scripts and setup `ang
                                 title: 'name'
                             },
                             search: {
-                                fields: ['id', 'name']
+                                fields: ['postId', 'name']
                             },
                         }
                     }

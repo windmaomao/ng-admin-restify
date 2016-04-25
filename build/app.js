@@ -127,6 +127,8 @@
 	        // List view
 	        if (operation == 'getList') {
 	            if ("_filters" in params) {
+	                // console.log(what, params._filters);
+	                // console.log(entity.search);
 	                angular.forEach(entity.search.fields, function(searchField) {
 	                    // search field
 	                    // var searchField = '_id';

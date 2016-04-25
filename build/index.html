@@ -109,7 +109,7 @@
                             entity: 'comment',
                             model: {
                                 id: { type: 'integer' },
-                                postId: { type: 'id', ref: 'post' },
+                                postId: { type: 'integer', ref: 'post' },
                                 body: { type: 'string', required: true },
                                 createdAt: { type: 'date' }
                             },
@@ -177,7 +177,7 @@
                             entity: 'image',
                             model: {
                                 id: { type: 'integer' },
-                                postId: { type: 'id', ref: 'post' },
+                                postId: { type: 'integer', ref: 'post' },
                                 name: { type: 'string', required: true },
                                 caption: 'string'
                             },
@@ -214,7 +214,7 @@
                                 title: 'name'
                             },
                             search: {
-                                fields: ['id', 'name']
+                                fields: ['id', 'postId', 'name']
                             },
                         }
                     }
