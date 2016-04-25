@@ -50,7 +50,14 @@
     {
       "id": 1,
       "name": "nea_mockup.png",
-      "caption": "NEA Mockup Design"
+      "caption": "NEA Mockup Design",
+      "postId": 1
+    },
+    {
+      "id": 2,
+      "name": "surestep_webdms.png",
+      "caption": "Surestep",
+      "postId": 2
     }
   ],
   "profile": {
