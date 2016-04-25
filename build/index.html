@@ -133,6 +133,11 @@
                                     type: 'datetime',
                                     formatString: 'yyyy-MM-dd'
                                 },
+                                body: {
+                                    map: function(value, entry) {
+                                        return entry.postId + '-' + value;
+                                    }
+                                }
                             },
                             default: {
                                 fields: [ 'id', 'postId', 'body', 'createdAt' ],

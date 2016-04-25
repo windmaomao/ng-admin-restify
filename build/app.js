@@ -258,8 +258,7 @@
 	            switch (field.type) {
 	                case 'template':
 	                    nf = nga.field(field.field, 'template')
-	                        .template(field.template)
-	                    ;
+	                        .template(field.template);
 	                    break;
 	                case 'boolean':
 	                    nf = nga.field(field.field, field.type)
@@ -354,6 +353,10 @@
 	                    nf = nga.field(field.field);
 	                    break;
 	            };
+	            // add map
+	            if (field.map) {
+	                nf.map(field.map);
+	            }
 	            // add page
 	            if (field.perPage) {
 	                nf.perPage(field.perPage);
