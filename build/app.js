@@ -275,6 +275,18 @@
 	                    nf = nga.field(field.field, field.type)
 	                        .format(field.format)
 	                    break;
+	                case 'choice':
+	                    nf = nga.field(field.field, field.type);
+	                    if (field.choiceField) {
+	                        nf.choices(function(entry) {
+	                            return field.choices.filter(function(choice) {
+	                                return choice[field.choiceField] == entry.values[field.choiceField];
+	                            });
+	                        });
+	                    } else {
+	                        nf.choices(field.choices);
+	                    }
+	                    break;
 	                case 'string':
 	                    if (!editing) {
 	                        switch (field.format) {
@@ -359,6 +371,10 @@
 	                    nf = nga.field(field.field);
 	                    break;
 	            };
+	            // read-only
+	            if (field.readOnly) {
+	                nf.editable(false);
+	            }
 	            // add filters
 	            if (field.permanentFilters) {
 	                nf.permanentFilters(field.permanentFilters);
@@ -460,8 +476,17 @@
 	        defaults2nd(models[entityName], op.fields);
 
 	        // create entity
-	        var id = op.id || 'id';
-	        var entity = nga.entity(entityName).identifier(nga.field(id));
+	        var entity = nga.entity(entityName);
+
+	        if (op.id) {
+	            entity.identifier(nga.field(op.id));
+	        }
+	        if (op.label) {
+	            entity.label(op.label);
+	        }
+	        if (op.readOnly) {
+	            entity.readOnly();
+	        }
 	        entities[entityName] = entity;
 	        admin.addEntity(entity);
 	    });
