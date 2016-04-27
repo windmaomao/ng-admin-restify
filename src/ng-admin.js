@@ -114,9 +114,13 @@ var assembleFields = function(fields, editing) {
                         .format(formatString);
                     break;
                 case 'reference':
+                    var tField = nga.field(field.targetField);
+                    if (field.targetFieldMap) {
+                        tField.map(field.targetFieldMap);
+                    }
                     nf = nga.field(field.field, field.type)
                         .targetEntity(entities[field.targetEntity])
-                        .targetField(nga.field(field.targetField))
+                        .targetField(tField)
                         .detailLinkRoute('show')
                     ;
                     break;
@@ -147,6 +151,10 @@ var assembleFields = function(fields, editing) {
                     nf = nga.field(field.field);
                     break;
             };
+            // add filters
+            if (field.permanentFilters) {
+                nf.permanentFilters(field.permanentFilters);
+            }
             // add map
             if (field.map) {
                 nf.map(field.map);
