@@ -1,0 +1,25 @@
+<div class="container" style="width: 450px; margin-top: 150px;">
+
+    <h1>Welcome to Portal</h1>
+
+    <form class="form-signin" ng-submit="login()">
+        <h3 class="form-signin-heading">Please sign in</h3>
+
+        <div class="alert alert-danger" ng-if="error">
+          <strong>{{ error }}</strong>
+        </div>
+
+        <input type="text" ng-model="user.username" class="form-control" placeholder="Username" required autofocus>
+        <input type="password" ng-model="user.password" class="form-control" placeholder="Password" style="margin-top: 2px;">
+
+        <div class="checkbox">
+            <label>
+                <input type="checkbox" value="remember-me"> Remember me
+            </label>
+        </div>
+
+        <button class="btn btn-lg btn-success btn-block" type="submit">Sign in</button>
+    </form>
+    <p style="margin-top:10px;">If you don't have a account yet, please <a ui-sref="register">Register</a>.</p>
+
+</div>

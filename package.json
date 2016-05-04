@@ -10,7 +10,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/windmaomao/ng-admin-restify.git"
+    "url": "git+https://github.com/windmaomao/ng-admin-restify.git"
   },
   "dependencies": {
     "ng-admin": "^0.9.1",
@@ -28,11 +28,5 @@
     "webpack-stream": "^3.1.0"
   },
   "license": "MIT",
-  "main": "index.js",
-  "maintainers": [
-    {
-      "name": "windmaomao",
-      "email": "windmaomao@gmail.com"
-    }
-  ]
+  "main": "./build/app.js"
 }

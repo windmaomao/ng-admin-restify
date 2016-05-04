@@ -35,10 +35,45 @@ gulp.task('default', ['build', 'connect']);
 
 // server connect with support to proxy
 gulp.task('connect', function() {
+    var user = { username: 'admin' };
     jsonServer.start({
         data: 'build/rest.json',
         port: config.port.api,
-        baseUrl: '/v1'
+        baseUrl: '/v1',
+        customRoutes: {
+            '/v1/login': {
+                method: 'post',
+                handler: function(req, res) {
+                    if (req.body.username == user.username) {
+                        return res.json(user);
+                    } else {
+                        return res.status(401).send({});
+                    }
+                }
+            },
+            '/v1/status': {
+                method: 'get',
+                handler: function(req, res) {
+                    return res.json(user);
+                }
+            },
+            '/v1/logout': {
+                method: 'get',
+                handler: function(req, res) {
+                    return res.json(true);
+                }
+            },
+            '/v1/register': {
+                method: 'post',
+                handler: function(req, res, next) {
+                    if (req.body.username == user.username) {
+                        return res.status(401).json({});
+                    } else {
+                        return res.json(user);
+                    }
+                }
+            }
+        }
     });
     connect.server({
         root: 'build',

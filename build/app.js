@@ -51,18 +51,68 @@
 	 * @author Fang Jin <fang-a.jin@db.com>
 	*/
 
-	var provider = __webpack_require__(1);
-	// var directive = require('./directive');
+	var config = __webpack_require__(1);
+	var provider = __webpack_require__(2);
+	var route = __webpack_require__(6);
+	var directive = __webpack_require__(7);
+	var controller = __webpack_require__(11);
+	var run = __webpack_require__(12);
 
-	angular.module('ng-admin-restify', ['ng-admin'])
+	var app = angular.module('ng-admin-restify', ['ng-admin'])
 	    // .directive('dashboardPage', directive.dashboardDirective)
 	    .provider('ngAdminRestify', provider.ngAdminRestifyProvider)
 	    .config(provider.restangularProvider)
 	;
 
+	if (config.auth) {
+	    app.config(route.authStates)
+	        .run(run.stateChangeStart)
+	        .directive('loginPage', directive.loginDirective)
+	        .directive('registerPage', directive.registerDirective)
+	        .directive('headerPartial', directive.headerDirective)
+	        .controller('LoginSignupCtrl', controller.loginSignupCtrl)
+	    ;
+	}
+
 
 /***/ },
 /* 1 */
+/***/ function(module, exports) {
+
+	/**
+	 * NG Admin config module
+	 *
+	 * Use a script to define the setting for ng-admin
+	 *
+	 * @date 03/29/16
+	 * @author Fang Jin <fang-a.jin@db.com>
+	*/
+
+	module.exports = {
+	    site: 'ngAdmin Restify',
+	    auth: true,
+	    url: '/v1/',
+	    rest: {
+	        url: '/v1',
+	        filter: '',
+	        page: {
+	            start: '_start',
+	            end: '_end',
+	            limit: '_limit',
+	            page: false,
+	        },
+	        sort: {
+	            field: '_sort',
+	            order: '_order',
+	            plus: false
+	        }
+	    },
+	    entities: {},
+	};
+
+
+/***/ },
+/* 2 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -72,8 +122,8 @@
 	 * @author Fang Jin <fang-a.jin@db.com>
 	*/
 
-	var ngAdmin = __webpack_require__(2);
-	var defaultOptions = __webpack_require__(5);
+	var ngAdmin = __webpack_require__(3);
+	var defaultOptions = __webpack_require__(1);
 
 	var provider = {};
 
@@ -87,6 +137,10 @@
 	        var app = ngAdmin.create(nga, options);
 	        // create custom dashboard
 	        app.dashboard().template('<dashboard-page></dashboard-page>');
+	        // create custom header
+	        if (defaultOptions.auth) {
+	            app.header('<header-partial></header-partial>');
+	        }
 	        // attach the admin application to the DOM and run it
 	        ngAdmin.attach(app);
 
@@ -203,7 +257,7 @@
 
 
 /***/ },
-/* 2 */
+/* 3 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -215,7 +269,7 @@
 	 * @author Fang Jin <fang-a.jin@db.com>
 	*/
 
-	var capitalize = __webpack_require__(3);
+	var capitalize = __webpack_require__(4);
 
 	var ngAdmin = {};
 
@@ -233,7 +287,7 @@
 	    ngAdmin.options = options;
 	    nga = provider;
 	    // create admin
-	    admin = nga.application(options.site).baseApiUrl(options.url);
+	    admin = nga.application(options.site).baseApiUrl(options.url + '/');
 	    // add tabs for each model
 	    ngAdmin.setupEntities(options.entities);
 	    // add menu for each model
@@ -586,10 +640,10 @@
 
 
 /***/ },
-/* 3 */
+/* 4 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var makeString = __webpack_require__(4);
+	var makeString = __webpack_require__(5);
 
 	module.exports = function capitalize(str, lowercaseRest) {
 	  str = makeString(str);
@@ -600,7 +654,7 @@
 
 
 /***/ },
-/* 4 */
+/* 5 */
 /***/ function(module, exports) {
 
 	/**
@@ -613,38 +667,182 @@
 
 
 /***/ },
-/* 5 */
+/* 6 */
 /***/ function(module, exports) {
 
 	/**
-	 * NG Admin config module
+	 * Route module
 	 *
-	 * Use a script to define the setting for ng-admin
-	 *
-	 * @date 03/29/16
+	 * @date 05/04/16
 	 * @author Fang Jin <fang-a.jin@db.com>
 	*/
 
-	module.exports = {
-	    site: 'ngAdmin Restify',
-	    url: '/v1/',
-	    rest: {
-	        url: '/v1/',
-	        filter: '',
-	        page: {
-	            start: '_start',
-	            end: '_end',
-	            limit: '_limit',
-	            page: false,
-	        },
-	        sort: {
-	            field: '_sort',
-	            order: '_order',
-	            plus: false
-	        }
-	    },
-	    entities: {},
+	var route = {};
+
+	module.exports = route;
+
+	route.authStates = function($stateProvider) {
+	    $stateProvider.state('login', {
+	        url: '/login',
+	        template: '<login-page></login-page>',
+	        controller: 'LoginSignupCtrl',
+	        public: true
+	    });
+	    $stateProvider.state('register', {
+	        url: '/register',
+	        template: '<register-page></register-page>',
+	        controller: 'LoginSignupCtrl',
+	        public: true
+	    });
 	};
+
+
+/***/ },
+/* 7 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/**
+	 * Directive module
+	 *
+	 * @date 04/01/16
+	 * @author Fang Jin <fang-a.jin@db.com>
+	*/
+
+	var config = __webpack_require__(1);
+	var directive = {};
+
+	module.exports = directive;
+
+	// directive.dashboardDirective = function() {
+	//     return {
+	//         restrict: 'AE',
+	//         template: require('./view/dashboard.html'),
+	//         replace: false,
+	//     };
+	// };
+
+	directive.loginDirective = function() {
+	    return {
+	        restrict: 'AE',
+	        template: __webpack_require__(8),
+	        replace: false,
+	    };
+	};
+
+	directive.registerDirective = function() {
+	    return {
+	        restrict: 'AE',
+	        template: __webpack_require__(9),
+	        replace: false,
+	    };
+	};
+
+	directive.headerDirective = function($http, $state) {
+	    return {
+	        restrict: 'AE',
+	        template: __webpack_require__(10),
+	        replace: false,
+	        link: function(scope, element, attrs) {
+	            var prefix = config.rest.url;
+	            scope.logout = function() {
+	                $http.get(prefix + '/logout').then(function(result) {
+	                    $state.go('login');
+	                });
+	            }
+	        }
+	    };
+	};
+
+
+/***/ },
+/* 8 */
+/***/ function(module, exports) {
+
+	module.exports = "<div class=\"container\" style=\"width: 450px; margin-top: 150px;\">\r\n\r\n    <h1>Welcome to Portal</h1>\r\n\r\n    <form class=\"form-signin\" ng-submit=\"login()\">\r\n        <h3 class=\"form-signin-heading\">Please sign in</h3>\r\n\r\n        <div class=\"alert alert-danger\" ng-if=\"error\">\r\n          <strong>{{ error }}</strong>\r\n        </div>\r\n\r\n        <input type=\"text\" ng-model=\"user.username\" class=\"form-control\" placeholder=\"Username\" required autofocus>\r\n        <input type=\"password\" ng-model=\"user.password\" class=\"form-control\" placeholder=\"Password\" style=\"margin-top: 2px;\">\r\n\r\n        <div class=\"checkbox\">\r\n            <label>\r\n                <input type=\"checkbox\" value=\"remember-me\"> Remember me\r\n            </label>\r\n        </div>\r\n\r\n        <button class=\"btn btn-lg btn-success btn-block\" type=\"submit\">Sign in</button>\r\n    </form>\r\n    <p style=\"margin-top:10px;\">If you don't have a account yet, please <a ui-sref=\"register\">Register</a>.</p>\r\n\r\n</div>\r\n"
+
+/***/ },
+/* 9 */
+/***/ function(module, exports) {
+
+	module.exports = "<div class=\"container\" style=\"width: 450px; margin-top: 150px;\">\r\n\r\n    <h1>Portal Registration</h1>\r\n\r\n    <form class=\"\" ng-submit=\"signup()\">\r\n        <div class=\"alert alert-danger\" ng-if=\"error\">\r\n          <strong>{{ error }}</strong>\r\n        </div>\r\n\r\n        <input type=\"text\" ng-model=\"user.username\" class=\"form-control\" placeholder=\"Username\" required autofocus>\r\n        <input type=\"password\" ng-model=\"user.password\" class=\"form-control\" placeholder=\"Password\" style=\"margin-top: 2px;\">\r\n        <input type=\"password\" ng-model=\"user.passwordConfirm\" class=\"form-control\" placeholder=\"Confirm Password\" style=\"margin-top: 2px;\">\r\n\r\n        <button class=\"btn btn-lg btn-success btn-block\" type=\"submit\">Sign Up</button>\r\n    </form>\r\n    <p style=\"margin-top:10px;\">If you have a account, please <a ui-sref=\"login\">Login</a>.</p>\r\n\r\n</div>\r\n"
+
+/***/ },
+/* 10 */
+/***/ function(module, exports) {
+
+	module.exports = "<div class=\"navbar-header\">\r\n    <a class=\"navbar-brand\" href=\"#\" ng-click=\"appController.displayHome()\">\r\n        Portal\r\n    </a>\r\n</div>\r\n<p class=\"navbar-text navbar-right\">\r\n    <a ng-click=\"logout()\">\r\n        <span class=\"glyphicon glyphicon-lock\"></span>&nbsp;Logout\r\n    </a>\r\n</p>\r\n"
+
+/***/ },
+/* 11 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/**
+	 * Controller module
+	 *
+	 * @date 05/04/16
+	 * @author Fang Jin <fang-a.jin@db.com>
+	*/
+
+	var controller = {};
+	var config = __webpack_require__(1);
+
+	module.exports = controller;
+
+	controller.loginSignupCtrl = function($scope, $http, $state) {
+	    $scope.user = {};
+	    $scope.error = "";
+	    var prefix = config.rest.url;
+	    $scope.login = function() {
+	        $http.post(prefix + '/login', $scope.user).then(function(result) {
+	            $state.go('dashboard');
+	        }, function(error) {
+	            $scope.error = error.statusText;
+	        });
+	    };
+	    $scope.signup = function() {
+	        $http.post(prefix + '/register', $scope.user).then(function(result) {
+	            $state.go('dashboard');
+	        }, function(error) {
+	            $scope.error = error.statusText;
+	        });
+	    };
+	}
+
+
+/***/ },
+/* 12 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/**
+	 * Run module
+	 *
+	 * @date 05/04/16
+	 * @author Fang Jin <fang-a.jin@db.com>
+	*/
+
+	var config = __webpack_require__(1);
+	var run = {};
+
+	module.exports = run;
+
+	run.stateChangeStart = function($rootScope, $state, $http) {
+	    var prefix = config.rest.url;
+	    $rootScope.$on('$stateChangeStart', function(event, next, params) {
+	        // console.log(next);
+	        if (!next.public) {
+	            $http.get(prefix + '/status').then(function(result) {
+	                // console.log(result);
+	                if (!result.data) {
+	                    event.preventDefault();
+	                    $state.go('login');
+	                }
+	            }, function(err) {
+	                event.preventDefault();
+	                $state.go('login');
+	            })
+	        }
+	    });
+	}
 
 
 /***/ }

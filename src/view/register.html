@@ -1,0 +1,18 @@
+<div class="container" style="width: 450px; margin-top: 150px;">
+
+    <h1>Portal Registration</h1>
+
+    <form class="" ng-submit="signup()">
+        <div class="alert alert-danger" ng-if="error">
+          <strong>{{ error }}</strong>
+        </div>
+
+        <input type="text" ng-model="user.username" class="form-control" placeholder="Username" required autofocus>
+        <input type="password" ng-model="user.password" class="form-control" placeholder="Password" style="margin-top: 2px;">
+        <input type="password" ng-model="user.passwordConfirm" class="form-control" placeholder="Confirm Password" style="margin-top: 2px;">
+
+        <button class="btn btn-lg btn-success btn-block" type="submit">Sign Up</button>
+    </form>
+    <p style="margin-top:10px;">If you have a account, please <a ui-sref="login">Login</a>.</p>
+
+</div>

@@ -44,6 +44,10 @@
                                 comments: { type: '' },
                                 tags: { type: '' },
                                 images: { type: '' },
+                                category: 'string',
+                                subCategory: 'string',
+                                updatedAt: 'string',
+                                _id: 'string'
                             },
                             id: 'id',
                             fields: {
@@ -86,14 +90,40 @@
                                     sort: {
                                         field: 'id',
                                         dir: 'DESC'
-                                    }
+                                    },
+                                    readOnly: true
                                 },
+                                updatedAt: {
+                                    readOnly: true
+                                },
+                                // _id: {
+                                //     type: 'prepare',
+                                //     targetField: 'id'
+                                // },
+                                category: {
+                                    type: 'choice',
+                                    choices: [
+                                        { label: 'Toy', value: 'toy' },
+                                        { label: 'Car', value: 'car' },
+                                    ]
+                                },
+                                subCategory: {
+                                    label: 'Sub',
+                                    type: 'choice',
+                                    choices: [
+                                        { category: 'toy', label: 'Toy1', value: 'toy1' },
+                                        { category: 'toy', label: 'Toy2', value: 'toy2' },
+                                        { category: 'car', label: 'Car1', value: 'car1' },
+                                        { category: 'car', label: 'Car2', value: 'car2' },
+                                    ],
+                                    choiceField: 'category',
+                                }
                             },
                             default: {
-                                fields: [ 'id', 'title', 'author', 'comments', 'tags', 'url', 'images' ],
+                                fields: [ 'id', 'title', 'author', 'comments', 'tags', 'url', 'images', 'category', 'subCategory' ],
                             },
                             list: {
-                                fields: [ 'id', 'title', 'author', 'tags', 'url'],
+                                fields: [ 'id', 'title', 'author', 'category', 'subCategory', 'tags', 'url'],
                                 actions: ['edit']
                             },
                             creation: {},
@@ -159,6 +189,7 @@
                                 name: { type: 'string', required: true },
                             },
                             id: 'id',
+                            label: 'Tagging',
                             fields: {},
                             default: {
                                 fields: ['id', 'name']

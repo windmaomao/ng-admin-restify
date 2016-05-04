@@ -25,7 +25,7 @@ ngAdmin.create = function(provider, options) {
     ngAdmin.options = options;
     nga = provider;
     // create admin
-    admin = nga.application(options.site).baseApiUrl(options.url);
+    admin = nga.application(options.site).baseApiUrl(options.url + '/');
     // add tabs for each model
     ngAdmin.setupEntities(options.entities);
     // add menu for each model

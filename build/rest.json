@@ -9,7 +9,9 @@
       "tags": [
         2,
         1
-      ]
+      ],
+      "category": "toy",
+      "subCategory": "toy2"
     },
     {
       "id": 2,
@@ -19,7 +21,9 @@
       "imageId": 1,
       "tags": [
         2
-      ]
+      ],
+      "category": "car",
+      "subCategory": "car1"
     }
   ],
   "comment": [

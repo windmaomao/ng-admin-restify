@@ -5,16 +5,47 @@
  * @author Fang Jin <fang-a.jin@db.com>
 */
 
-var dashboardDirectiveTemplate = require('./view/dashboard.html');
-
+var config = require('./config');
 var directive = {};
 
-directive.dashboardDirective = function() {
+module.exports = directive;
+
+// directive.dashboardDirective = function() {
+//     return {
+//         restrict: 'AE',
+//         template: require('./view/dashboard.html'),
+//         replace: false,
+//     };
+// };
+
+directive.loginDirective = function() {
     return {
         restrict: 'AE',
-        template: dashboardDirectiveTemplate,
+        template: require('./view/login.html'),
         replace: false,
     };
 };
 
-module.exports = directive;
+directive.registerDirective = function() {
+    return {
+        restrict: 'AE',
+        template: require('./view/register.html'),
+        replace: false,
+    };
+};
+
+directive.headerDirective = function($http, $state) {
+    return {
+        restrict: 'AE',
+        template: require('./view/header.html'),
+        replace: false,
+        link: function(scope, element, attrs) {
+            var prefix = config.rest.url;
+            scope.logout = function() {
+                $http.get(prefix + '/logout').then(function(result) {
+                    $state.go('login');
+                });
+            }
+        }
+    };
+};
