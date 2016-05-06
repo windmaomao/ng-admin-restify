@@ -90,7 +90,7 @@
 
 	module.exports = {
 	    site: 'ngAdmin Restify',
-	    auth: true,
+	    auth: false,
 	    url: '/v1/',
 	    rest: {
 	        url: '/v1',
@@ -136,7 +136,7 @@
 	        // create an admin application
 	        var app = ngAdmin.create(nga, options);
 	        // create custom dashboard
-	        app.dashboard().template('<dashboard-page></dashboard-page>');
+	        app.dashboard(nga.dashboard().template('<dashboard-page></dashboard-page>'));
 	        // create custom header
 	        if (defaultOptions.auth) {
 	            app.header('<header-partial></header-partial>');
@@ -429,6 +429,10 @@
 	            if (field.readOnly) {
 	                nf.editable(false);
 	            }
+	            // add attributes
+	            if (field.attributes) {
+	                nf.attributes(field.attributes);
+	            }
 	            // add filters
 	            if (field.permanentFilters) {
 	                nf.permanentFilters(field.permanentFilters);
@@ -574,6 +578,9 @@
 	        if (op.list.sort) {
 	            var sort = op.list.sort || '';
 	            listView.sortField(sort.field).sortDir(sort.dir);
+	        }
+	        if (op.list.perPage) {
+	            listView.perPage(op.list.perPage);
 	        }
 	        if (op.list.title) {
 	            listView.title(op.list.title);

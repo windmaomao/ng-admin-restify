@@ -19,7 +19,7 @@ provider.ngAdminRestifyProvider = function(NgAdminConfigurationProvider) {
         // create an admin application
         var app = ngAdmin.create(nga, options);
         // create custom dashboard
-        app.dashboard().template('<dashboard-page></dashboard-page>');
+        app.dashboard(nga.dashboard().template('<dashboard-page></dashboard-page>'));
         // create custom header
         if (defaultOptions.auth) {
             app.header('<header-partial></header-partial>');

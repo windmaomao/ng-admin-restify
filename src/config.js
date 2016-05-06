@@ -9,7 +9,7 @@
 
 module.exports = {
     site: 'ngAdmin Restify',
-    auth: true,
+    auth: false,
     url: '/v1/',
     rest: {
         url: '/v1',

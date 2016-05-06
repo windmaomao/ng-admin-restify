@@ -167,6 +167,10 @@ var assembleFields = function(fields, editing) {
             if (field.readOnly) {
                 nf.editable(false);
             }
+            // add attributes
+            if (field.attributes) {
+                nf.attributes(field.attributes);
+            }
             // add filters
             if (field.permanentFilters) {
                 nf.permanentFilters(field.permanentFilters);
@@ -312,6 +316,9 @@ ngAdmin.setupEntities = function(opts) {
         if (op.list.sort) {
             var sort = op.list.sort || '';
             listView.sortField(sort.field).sortDir(sort.dir);
+        }
+        if (op.list.perPage) {
+            listView.perPage(op.list.perPage);
         }
         if (op.list.title) {
             listView.title(op.list.title);
