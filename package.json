@@ -1,6 +1,6 @@
 {
   "name": "ng-admin-restify",
-  "version": "0.1.14",
+  "version": "0.1.15",
   "description": "Wire restify server with ng-admin configuration file",
   "author": {
     "name": "Fang Jin"
