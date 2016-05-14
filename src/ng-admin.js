@@ -323,16 +323,32 @@ ngAdmin.setupEntities = function(opts) {
         if (op.list.title) {
             listView.title(op.list.title);
         }
+        if (op.list.description) {
+            listView.description(op.list.description);
+        }
 
-        entity.creationView()
+        var creationView = entity.creationView()
             .fields(ngAdmin.ngaFieldsFromModel(entityName, creationFields, true))
         ;
+        if (op.creation.title) {
+            creationView.title(op.creation.title);
+        }
+        if (op.creation.description) {
+            creationView.description(op.creation.description);
+        }
+        // if set, visit show view
+        if (!op.creation.gotoShow) {
+            creationView.onSubmitSuccess(['progression', 'notification', '$state', 'entry', 'entity', function(progression, notification, $state, entry, entity) {
+                progression.done();
+                notification.log(capitalize(entity.name()) + ' ' + entry._identifierValue + ' ' + 'successfully created.', { addnCls: 'humane-flatty-success' });
+                $state.go($state.get('list'), { entity: entity.name() });
+                return false;
+            }]);
+        }
 
-        entity.editionView()
+        var editionView = entity.editionView()
             .fields(ngAdmin.ngaFieldsFromModel(entityName, creationFields, true))
-            .title('Edit')
             .onSubmitSuccess(function(progression, notification, $state, entry, entity) {
-                console.log(entry);
                 // stop the progress bar
                 progression.done();
                 // add a notification
@@ -343,13 +359,32 @@ ngAdmin.setupEntities = function(opts) {
                 return false;
             })
         ;
+        if (op.edition.title) {
+            editionView.title(op.edition.title);
+        } else {
+            editionView.title('Edit ' + capitalize(entityName))
+        }
+        if (op.edition.description) {
+            editionView.description(op.edition.description);
+        }
+        // if set, visit show view
+        if (!op.edition.gotoShow) {
+            editionView.onSubmitSuccess(['progression', 'notification', '$state', 'entry', 'entity', function(progression, notification, $state, entry, entity) {
+                progression.done();
+                notification.log(capitalize(entity.name()) + ' ' + entry._identifierValue + ' ' + 'successfully edited.', { addnCls: 'humane-flatty-success' });
+                $state.go($state.get('list'), { entity: entity.name() });
+                return false;
+            }]);
+        }
 
         var showView = entity.showView()
             .fields(ngAdmin.ngaFieldsFromModel(entityName, showFields))
         ;
-
         if (op.show.title) {
             showView.title(capitalize(entityName) + ': {{ entry.values.' + op.show.title + ' }}');
+        }
+        if (op.show.description) {
+            showView.description(op.show.description);
         }
     });
 };

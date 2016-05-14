@@ -21,7 +21,7 @@ provider.ngAdminRestifyProvider = function(NgAdminConfigurationProvider) {
         // create custom dashboard
         app.dashboard(nga.dashboard().template('<dashboard-page></dashboard-page>'));
         // create custom header
-        if (defaultOptions.auth) {
+        if (options.auth) {
             app.header('<header-partial></header-partial>');
         }
         // attach the admin application to the DOM and run it
@@ -49,7 +49,9 @@ provider.ngAdminRestifyProvider = function(NgAdminConfigurationProvider) {
 
     this.$get = function() {
         var self = this;
-        return {};
+        return {
+            options: self.options
+        };
     };
 };
 
@@ -131,6 +133,8 @@ provider.restangularProvider = function(RestangularProvider) {
                     delete params._sortDir;
                 }
             }
+            // add no cache flag for IE
+            params['no_cache'] = Date.now();
         }
         return { params: params };
     });

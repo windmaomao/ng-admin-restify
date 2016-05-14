@@ -51,8 +51,7 @@
 	 * @author Fang Jin <fang-a.jin@db.com>
 	*/
 
-	var config = __webpack_require__(1);
-	var provider = __webpack_require__(2);
+	var provider = __webpack_require__(1);
 	var route = __webpack_require__(6);
 	var directive = __webpack_require__(7);
 	var controller = __webpack_require__(11);
@@ -64,55 +63,18 @@
 	    .config(provider.restangularProvider)
 	;
 
-	if (config.auth) {
-	    app.config(route.authStates)
-	        .run(run.stateChangeStart)
-	        .directive('loginPage', directive.loginDirective)
-	        .directive('registerPage', directive.registerDirective)
-	        .directive('headerPartial', directive.headerDirective)
-	        .controller('LoginSignupCtrl', controller.loginSignupCtrl)
-	    ;
-	}
+	// auth
+	app.config(route.authStates)
+	    .run(run.stateChangeStart)
+	    .directive('loginPage', directive.loginDirective)
+	    .directive('registerPage', directive.registerDirective)
+	    .directive('headerPartial', directive.headerDirective)
+	    .controller('LoginSignupCtrl', controller.loginSignupCtrl)
+	;
 
 
 /***/ },
 /* 1 */
-/***/ function(module, exports) {
-
-	/**
-	 * NG Admin config module
-	 *
-	 * Use a script to define the setting for ng-admin
-	 *
-	 * @date 03/29/16
-	 * @author Fang Jin <fang-a.jin@db.com>
-	*/
-
-	module.exports = {
-	    site: 'ngAdmin Restify',
-	    auth: false,
-	    url: '/v1/',
-	    rest: {
-	        url: '/v1',
-	        filter: '',
-	        page: {
-	            start: '_start',
-	            end: '_end',
-	            limit: '_limit',
-	            page: false,
-	        },
-	        sort: {
-	            field: '_sort',
-	            order: '_order',
-	            plus: false
-	        }
-	    },
-	    entities: {},
-	};
-
-
-/***/ },
-/* 2 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -122,8 +84,8 @@
 	 * @author Fang Jin <fang-a.jin@db.com>
 	*/
 
-	var ngAdmin = __webpack_require__(3);
-	var defaultOptions = __webpack_require__(1);
+	var ngAdmin = __webpack_require__(2);
+	var defaultOptions = __webpack_require__(5);
 
 	var provider = {};
 
@@ -138,7 +100,7 @@
 	        // create custom dashboard
 	        app.dashboard(nga.dashboard().template('<dashboard-page></dashboard-page>'));
 	        // create custom header
-	        if (defaultOptions.auth) {
+	        if (options.auth) {
 	            app.header('<header-partial></header-partial>');
 	        }
 	        // attach the admin application to the DOM and run it
@@ -166,7 +128,9 @@
 
 	    this.$get = function() {
 	        var self = this;
-	        return {};
+	        return {
+	            options: self.options
+	        };
 	    };
 	};
 
@@ -248,6 +212,8 @@
 	                    delete params._sortDir;
 	                }
 	            }
+	            // add no cache flag for IE
+	            params['no_cache'] = Date.now();
 	        }
 	        return { params: params };
 	    });
@@ -257,7 +223,7 @@
 
 
 /***/ },
-/* 3 */
+/* 2 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -269,7 +235,7 @@
 	 * @author Fang Jin <fang-a.jin@db.com>
 	*/
 
-	var capitalize = __webpack_require__(4);
+	var capitalize = __webpack_require__(3);
 
 	var ngAdmin = {};
 
@@ -585,16 +551,32 @@
 	        if (op.list.title) {
 	            listView.title(op.list.title);
 	        }
+	        if (op.list.description) {
+	            listView.description(op.list.description);
+	        }
 
-	        entity.creationView()
+	        var creationView = entity.creationView()
 	            .fields(ngAdmin.ngaFieldsFromModel(entityName, creationFields, true))
 	        ;
+	        if (op.creation.title) {
+	            creationView.title(op.creation.title);
+	        }
+	        if (op.creation.description) {
+	            creationView.description(op.creation.description);
+	        }
+	        // if set, visit show view
+	        if (!op.creation.gotoShow) {
+	            creationView.onSubmitSuccess(['progression', 'notification', '$state', 'entry', 'entity', function(progression, notification, $state, entry, entity) {
+	                progression.done();
+	                notification.log(capitalize(entity.name()) + ' ' + entry._identifierValue + ' ' + 'successfully created.', { addnCls: 'humane-flatty-success' });
+	                $state.go($state.get('list'), { entity: entity.name() });
+	                return false;
+	            }]);
+	        }
 
-	        entity.editionView()
+	        var editionView = entity.editionView()
 	            .fields(ngAdmin.ngaFieldsFromModel(entityName, creationFields, true))
-	            .title('Edit')
 	            .onSubmitSuccess(function(progression, notification, $state, entry, entity) {
-	                console.log(entry);
 	                // stop the progress bar
 	                progression.done();
 	                // add a notification
@@ -605,13 +587,32 @@
 	                return false;
 	            })
 	        ;
+	        if (op.edition.title) {
+	            editionView.title(op.edition.title);
+	        } else {
+	            editionView.title('Edit ' + capitalize(entityName))
+	        }
+	        if (op.edition.description) {
+	            editionView.description(op.edition.description);
+	        }
+	        // if set, visit show view
+	        if (!op.edition.gotoShow) {
+	            editionView.onSubmitSuccess(['progression', 'notification', '$state', 'entry', 'entity', function(progression, notification, $state, entry, entity) {
+	                progression.done();
+	                notification.log(capitalize(entity.name()) + ' ' + entry._identifierValue + ' ' + 'successfully edited.', { addnCls: 'humane-flatty-success' });
+	                $state.go($state.get('list'), { entity: entity.name() });
+	                return false;
+	            }]);
+	        }
 
 	        var showView = entity.showView()
 	            .fields(ngAdmin.ngaFieldsFromModel(entityName, showFields))
 	        ;
-
 	        if (op.show.title) {
 	            showView.title(capitalize(entityName) + ': {{ entry.values.' + op.show.title + ' }}');
+	        }
+	        if (op.show.description) {
+	            showView.description(op.show.description);
 	        }
 	    });
 	};
@@ -647,10 +648,10 @@
 
 
 /***/ },
-/* 4 */
+/* 3 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var makeString = __webpack_require__(5);
+	var makeString = __webpack_require__(4);
 
 	module.exports = function capitalize(str, lowercaseRest) {
 	  str = makeString(str);
@@ -661,7 +662,7 @@
 
 
 /***/ },
-/* 5 */
+/* 4 */
 /***/ function(module, exports) {
 
 	/**
@@ -670,6 +671,42 @@
 	module.exports = function makeString(object) {
 	  if (object == null) return '';
 	  return '' + object;
+	};
+
+
+/***/ },
+/* 5 */
+/***/ function(module, exports) {
+
+	/**
+	 * NG Admin config module
+	 *
+	 * Use a script to define the setting for ng-admin
+	 *
+	 * @date 03/29/16
+	 * @author Fang Jin <fang-a.jin@db.com>
+	*/
+
+	module.exports = {
+	    site: 'ngAdmin Restify',
+	    auth: true,
+	    url: '/v1/',
+	    rest: {
+	        url: '/v1',
+	        filter: '',
+	        page: {
+	            start: '_start',
+	            end: '_end',
+	            limit: '_limit',
+	            page: false,
+	        },
+	        sort: {
+	            field: '_sort',
+	            order: '_order',
+	            plus: false
+	        }
+	    },
+	    entities: {},
 	};
 
 
@@ -688,19 +725,22 @@
 
 	module.exports = route;
 
-	route.authStates = function($stateProvider) {
-	    $stateProvider.state('login', {
-	        url: '/login',
-	        template: '<login-page></login-page>',
-	        controller: 'LoginSignupCtrl',
-	        public: true
-	    });
-	    $stateProvider.state('register', {
-	        url: '/register',
-	        template: '<register-page></register-page>',
-	        controller: 'LoginSignupCtrl',
-	        public: true
-	    });
+	route.authStates = function($stateProvider, ngAdminRestifyProvider) {
+	    var options = ngAdminRestifyProvider.options;
+	    if (options.auth) {
+	        $stateProvider.state('login', {
+	            url: '/login',
+	            template: '<login-page></login-page>',
+	            controller: 'LoginSignupCtrl',
+	            public: true
+	        });
+	        $stateProvider.state('register', {
+	            url: '/register',
+	            template: '<register-page></register-page>',
+	            controller: 'LoginSignupCtrl',
+	            public: true
+	        });
+	    }
 	};
 
 
@@ -715,7 +755,7 @@
 	 * @author Fang Jin <fang-a.jin@db.com>
 	*/
 
-	var config = __webpack_require__(1);
+	var config = __webpack_require__(5);
 	var directive = {};
 
 	module.exports = directive;
@@ -791,7 +831,7 @@
 	*/
 
 	var controller = {};
-	var config = __webpack_require__(1);
+	var config = __webpack_require__(5);
 
 	module.exports = controller;
 
@@ -818,7 +858,7 @@
 
 /***/ },
 /* 12 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ function(module, exports) {
 
 	/**
 	 * Run module
@@ -827,28 +867,31 @@
 	 * @author Fang Jin <fang-a.jin@db.com>
 	*/
 
-	var config = __webpack_require__(1);
 	var run = {};
 
 	module.exports = run;
 
-	run.stateChangeStart = function($rootScope, $state, $http) {
-	    var prefix = config.rest.url;
-	    $rootScope.$on('$stateChangeStart', function(event, next, params) {
-	        // console.log(next);
-	        if (!next.public) {
-	            $http.get(prefix + '/status').then(function(result) {
-	                // console.log(result);
-	                if (!result.data) {
+	run.stateChangeStart = function($rootScope, $state, $http, ngAdminRestify) {
+	    var options = ngAdminRestify.options;
+
+	    if (options.auth) {
+	        var prefix = options.rest.url;
+	        $rootScope.$on('$stateChangeStart', function(event, next, params) {
+	            // console.log(next);
+	            if (!next.public) {
+	                $http.get(prefix + '/status').then(function(result) {
+	                    // console.log(result);
+	                    if (!result.data) {
+	                        event.preventDefault();
+	                        $state.go('login');
+	                    }
+	                }, function(err) {
 	                    event.preventDefault();
 	                    $state.go('login');
-	                }
-	            }, function(err) {
-	                event.preventDefault();
-	                $state.go('login');
-	            })
-	        }
-	    });
+	                })
+	            }
+	        });
+	    }
 	}
 
 
