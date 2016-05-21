@@ -32,6 +32,9 @@ ngAdmin.create = function(provider, options) {
     if (options.routes) {
         ngAdmin.setupMenus(options.routes);
     }
+    if (options.dashboard) {
+        ngAdmin.setupDashboard(options.dashboard);
+    }
     // return admin instance
     return admin;
 };
@@ -260,6 +263,74 @@ var defaults2nd = function(target, source) {
     return target;
 };
 
+var handleCommonView = function(view, entityName, fields, options) {
+    // console.log(view);
+    // setup fields
+    var edition = (view._type == 'EditionView');
+    var ff = ngAdmin.ngaFieldsFromModel(entityName, fields, edition);
+    view.fields(ff);
+
+    // setup view properties
+    switch (view._type) {
+        default:
+        case 'ListView':
+            var actions = options.actions || ['show', 'edit'];
+            var filters = options.filters || 'id';
+            view.title(capitalize(entityName))
+                .listActions(actions)
+                .filters(ngAdmin.ngaFieldsFromModel(entityName, filters));
+            ;
+            break;
+        case 'EditView':
+            view.title('Edit ' + entityName);
+            break;
+        case 'CreateView':
+            view.title('Create a ' + entityName);
+            break;
+        case 'ShowView':
+            view.title(capitalize(entityName) + ' details');
+            break;
+    }
+
+    if (options.sort) {
+        var sort = options.sort || '';
+        view.sortField(sort.field).sortDir(sort.dir);
+    }
+    if (options.perPage) {
+        view.perPage(options.perPage);
+    }
+    if (options.title) {
+        view.title(options.title);
+    }
+    if (options.description) {
+        view.description(options.description);
+    }
+    if (!options.gotoShow && view.onSubmitSuccess) {
+        view.onSubmitSuccess(['progression', 'notification', '$state', 'entry', 'entity', function(progression, notification, $state, entry, entity) {
+            progression.done();
+            notification.log(capitalize(entity.name()) + ' is successfully updated.', { addnCls: 'humane-flatty-success' });
+            $state.go($state.get('list'), { entity: entity.name() });
+            return false;
+        }]);
+    }
+
+    return view;
+};
+
+// Setup view
+ngAdmin.setupView = function(entity, viewName, options) {
+    var op = options[viewName];
+    var defaultFields = options.default.fields;
+    var fields = op.fields || defaultFields;
+    var entityName = entity._name;
+
+    // create view, ex. entity.creationView();
+    var view = entity[viewName + 'View']();
+    // setup common view properties
+    handleCommonView(view, entityName, fields, op);
+    return view;
+}
+
 // Setup entities for admin
 ngAdmin.setupEntities = function(opts) {
     // populate model definition and ui entity
@@ -295,97 +366,12 @@ ngAdmin.setupEntities = function(opts) {
             return;
         }
 
+        // create all entity views
         var entityName = op.entity || key;
-        var id = op.id || 'id';
-        var fields = op.fields;
-        var defaultFields = op.default.fields;
-        var listFields = op.list.fields || defaultFields;
-        var showFields = op.show.fields || defaultFields;
-        var creationFields = op.creation.fields || defaultFields;
-        var searchFields = op.search.fields || id;
-        var listActions = op.list.actions || ['show', 'edit'];
-
         var entity = entities[entityName];
-
-        var listView = entity.listView()
-            .fields(ngAdmin.ngaFieldsFromModel(entityName, listFields))
-            .listActions(listActions)
-            // .filters(ngAdmin.assembleSearchFields(nga, searchFields))
-            .filters(ngAdmin.ngaFieldsFromModel(entityName, searchFields))
-        ;
-        if (op.list.sort) {
-            var sort = op.list.sort || '';
-            listView.sortField(sort.field).sortDir(sort.dir);
-        }
-        if (op.list.perPage) {
-            listView.perPage(op.list.perPage);
-        }
-        if (op.list.title) {
-            listView.title(op.list.title);
-        }
-        if (op.list.description) {
-            listView.description(op.list.description);
-        }
-
-        var creationView = entity.creationView()
-            .fields(ngAdmin.ngaFieldsFromModel(entityName, creationFields, true))
-        ;
-        if (op.creation.title) {
-            creationView.title(op.creation.title);
-        }
-        if (op.creation.description) {
-            creationView.description(op.creation.description);
-        }
-        // if set, visit show view
-        if (!op.creation.gotoShow) {
-            creationView.onSubmitSuccess(['progression', 'notification', '$state', 'entry', 'entity', function(progression, notification, $state, entry, entity) {
-                progression.done();
-                notification.log(capitalize(entity.name()) + ' ' + entry._identifierValue + ' ' + 'successfully created.', { addnCls: 'humane-flatty-success' });
-                $state.go($state.get('list'), { entity: entity.name() });
-                return false;
-            }]);
-        }
-
-        var editionView = entity.editionView()
-            .fields(ngAdmin.ngaFieldsFromModel(entityName, creationFields, true))
-            .onSubmitSuccess(function(progression, notification, $state, entry, entity) {
-                // stop the progress bar
-                progression.done();
-                // add a notification
-                notification.log(entity.name() + " has been successfully edited.", { addnCls: 'humane-flatty-success' });
-                // redirect to the list view
-                $state.go($state.get('list'), { entity: entity.name() });
-                // cancel the default action (redirect to the edition view)
-                return false;
-            })
-        ;
-        if (op.edition.title) {
-            editionView.title(op.edition.title);
-        } else {
-            editionView.title('Edit ' + capitalize(entityName))
-        }
-        if (op.edition.description) {
-            editionView.description(op.edition.description);
-        }
-        // if set, visit show view
-        if (!op.edition.gotoShow) {
-            editionView.onSubmitSuccess(['progression', 'notification', '$state', 'entry', 'entity', function(progression, notification, $state, entry, entity) {
-                progression.done();
-                notification.log(capitalize(entity.name()) + ' ' + entry._identifierValue + ' ' + 'successfully edited.', { addnCls: 'humane-flatty-success' });
-                $state.go($state.get('list'), { entity: entity.name() });
-                return false;
-            }]);
-        }
-
-        var showView = entity.showView()
-            .fields(ngAdmin.ngaFieldsFromModel(entityName, showFields))
-        ;
-        if (op.show.title) {
-            showView.title(capitalize(entityName) + ': {{ entry.values.' + op.show.title + ' }}');
-        }
-        if (op.show.description) {
-            showView.description(op.show.description);
-        }
+        ['list', 'creation', 'edition', 'show'].map(function(item) {
+            ngAdmin.setupView(entity, item, op);
+        });
     });
 };
 
@@ -414,6 +400,21 @@ ngAdmin.setupMenus = function(routes) {
         root.addChild(main);
     });
     admin.menu(root);
+};
+
+// Setup dashboard
+ngAdmin.setupDashboard = function(collections) {
+    var dashboard = nga.dashboard();
+    if (collections) {
+        _.each(collections, function(col) {
+            var entityName = col.entity;
+            var entity = entities[entityName];
+            var collection = nga.collection(entity).name(col.name);
+            handleCommonView(collection, entityName, col.fields, col);
+            dashboard.addCollection(collection);
+        });
+    }
+    admin.dashboard(dashboard);
 };
 
 module.exports = ngAdmin;
