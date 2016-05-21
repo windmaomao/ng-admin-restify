@@ -260,6 +260,40 @@ var defaults2nd = function(target, source) {
     return target;
 };
 
+var handleCommonView = function(view, entity, fields, options) {
+    var edition = (view._type == 'EditionView');
+    var ff = ngAdmin.ngaFieldsFromModel(entity, fields, edition);
+    view.fields(ff);
+    if (options.sort) {
+        var sort = options.sort || '';
+        view.sortField(sort.field).sortDir(sort.dir);
+    }
+    if (options.perPage) {
+        view.perPage(options.perPage);
+    }
+    if (options.title) {
+        view.title(options.title);
+    }
+    if (options.description) {
+        view.description(options.description);
+    }
+    return view;
+};
+
+// Setup view
+ngAdmin.setupView = function(entity, viewName, options) {
+    var op = options[viewName];
+    var defaultFields = options.default.fields;
+    var fields = op.fields || defaultFields;
+    var entityName = entity._name;
+
+    // create view, ex. entity.creationView();
+    var view = entity[viewName + 'View']();
+    // setup common view properties
+    handleCommonView(view, entityName, fields, op);
+    return view;
+}
+
 // Setup entities for admin
 ngAdmin.setupEntities = function(opts) {
     // populate model definition and ui entity
@@ -298,45 +332,16 @@ ngAdmin.setupEntities = function(opts) {
         var entityName = op.entity || key;
         var id = op.id || 'id';
         var fields = op.fields;
-        var defaultFields = op.default.fields;
-        var listFields = op.list.fields || defaultFields;
-        var showFields = op.show.fields || defaultFields;
-        var creationFields = op.creation.fields || defaultFields;
         var searchFields = op.search.fields || id;
         var listActions = op.list.actions || ['show', 'edit'];
 
         var entity = entities[entityName];
 
-        var listView = entity.listView()
-            .fields(ngAdmin.ngaFieldsFromModel(entityName, listFields))
+        var listView = ngAdmin.setupView(entity, 'list', op)
             .listActions(listActions)
-            // .filters(ngAdmin.assembleSearchFields(nga, searchFields))
-            .filters(ngAdmin.ngaFieldsFromModel(entityName, searchFields))
-        ;
-        if (op.list.sort) {
-            var sort = op.list.sort || '';
-            listView.sortField(sort.field).sortDir(sort.dir);
-        }
-        if (op.list.perPage) {
-            listView.perPage(op.list.perPage);
-        }
-        if (op.list.title) {
-            listView.title(op.list.title);
-        }
-        if (op.list.description) {
-            listView.description(op.list.description);
-        }
+            .filters(ngAdmin.ngaFieldsFromModel(entityName, searchFields));
 
-        var creationView = entity.creationView()
-            .fields(ngAdmin.ngaFieldsFromModel(entityName, creationFields, true))
-        ;
-        if (op.creation.title) {
-            creationView.title(op.creation.title);
-        }
-        if (op.creation.description) {
-            creationView.description(op.creation.description);
-        }
-        // if set, visit show view
+        var creationView = ngAdmin.setupView(entity, 'creation', op);
         if (!op.creation.gotoShow) {
             creationView.onSubmitSuccess(['progression', 'notification', '$state', 'entry', 'entity', function(progression, notification, $state, entry, entity) {
                 progression.done();
@@ -346,27 +351,7 @@ ngAdmin.setupEntities = function(opts) {
             }]);
         }
 
-        var editionView = entity.editionView()
-            .fields(ngAdmin.ngaFieldsFromModel(entityName, creationFields, true))
-            .onSubmitSuccess(function(progression, notification, $state, entry, entity) {
-                // stop the progress bar
-                progression.done();
-                // add a notification
-                notification.log(entity.name() + " has been successfully edited.", { addnCls: 'humane-flatty-success' });
-                // redirect to the list view
-                $state.go($state.get('list'), { entity: entity.name() });
-                // cancel the default action (redirect to the edition view)
-                return false;
-            })
-        ;
-        if (op.edition.title) {
-            editionView.title(op.edition.title);
-        } else {
-            editionView.title('Edit ' + capitalize(entityName))
-        }
-        if (op.edition.description) {
-            editionView.description(op.edition.description);
-        }
+        var editionView = ngAdmin.setupView(entity, 'edition', op);
         // if set, visit show view
         if (!op.edition.gotoShow) {
             editionView.onSubmitSuccess(['progression', 'notification', '$state', 'entry', 'entity', function(progression, notification, $state, entry, entity) {
@@ -377,14 +362,9 @@ ngAdmin.setupEntities = function(opts) {
             }]);
         }
 
-        var showView = entity.showView()
-            .fields(ngAdmin.ngaFieldsFromModel(entityName, showFields))
-        ;
+        var showView = ngAdmin.setupView(entity, 'show', op);
         if (op.show.title) {
             showView.title(capitalize(entityName) + ': {{ entry.values.' + op.show.title + ' }}');
-        }
-        if (op.show.description) {
-            showView.description(op.show.description);
         }
     });
 };
