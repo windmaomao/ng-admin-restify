@@ -109,7 +109,8 @@ var options = {
             list: {
                 description: 'Blogging',
                 fields: [ 'id', 'title', 'author', 'category', 'subCategory', 'tags', 'url'],
-                actions: ['edit']
+                actions: ['edit'],
+                filters: ['id']
             },
             creation: {
                 description: 'Create a blog'
@@ -118,7 +119,6 @@ var options = {
                 description: 'Edit blog',
             },
             show: {
-                title: 'title',
                 description: 'Blog details'
             },
             search: {
@@ -165,9 +165,7 @@ var options = {
             list: {},
             creation: {},
             edition: {},
-            show: {
-                title: 'body'
-            },
+            show: {},
             search: {
                 fields: ['id', 'postId']
             },
@@ -187,9 +185,7 @@ var options = {
             list: {},
             creation: {},
             edition: {},
-            show: {
-                title: 'name'
-            },
+            show: {},
             search: {
                 fields: ['id', 'name']
             },
@@ -231,9 +227,7 @@ var options = {
             list: {},
             creation: {},
             edition: {},
-            show: {
-                title: 'name'
-            },
+            show: {},
             search: {
                 fields: ['id', 'postId', 'name']
             },

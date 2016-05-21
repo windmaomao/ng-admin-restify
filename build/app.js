@@ -488,10 +488,35 @@
 	    return target;
 	};
 
-	var handleCommonView = function(view, entity, fields, options) {
+	var handleCommonView = function(view, entityName, fields, options) {
+	    // console.log(view);
+	    // setup fields
 	    var edition = (view._type == 'EditionView');
-	    var ff = ngAdmin.ngaFieldsFromModel(entity, fields, edition);
+	    var ff = ngAdmin.ngaFieldsFromModel(entityName, fields, edition);
 	    view.fields(ff);
+
+	    // setup view properties
+	    switch (view._type) {
+	        // default:
+	        case 'ListView':
+	            var actions = options.actions || ['show', 'edit'];
+	            var filters = options.filters || 'id';
+	            view.title(capitalize(entityName))
+	                .listActions(actions)
+	                .filters(ngAdmin.ngaFieldsFromModel(entityName, filters));
+	            ;
+	            break;
+	        case 'EditView':
+	            view.title('Edit ' + entityName);
+	            break;
+	        case 'CreateView':
+	            view.title('Create a ' + entityName);
+	            break;
+	        case 'ShowView':
+	            view.title(capitalize(entityName) + ' details');
+	            break;
+	    }
+
 	    if (options.sort) {
 	        var sort = options.sort || '';
 	        view.sortField(sort.field).sortDir(sort.dir);
@@ -505,6 +530,15 @@
 	    if (options.description) {
 	        view.description(options.description);
 	    }
+	    if (!options.gotoShow && view.onSubmitSuccess) {
+	        view.onSubmitSuccess(['progression', 'notification', '$state', 'entry', 'entity', function(progression, notification, $state, entry, entity) {
+	            progression.done();
+	            notification.log(capitalize(entity.name()) + ' is successfully updated.', { addnCls: 'humane-flatty-success' });
+	            $state.go($state.get('list'), { entity: entity.name() });
+	            return false;
+	        }]);
+	    }
+
 	    return view;
 	};
 
@@ -557,43 +591,12 @@
 	            return;
 	        }
 
+	        // create all entity views
 	        var entityName = op.entity || key;
-	        var id = op.id || 'id';
-	        var fields = op.fields;
-	        var searchFields = op.search.fields || id;
-	        var listActions = op.list.actions || ['show', 'edit'];
-
 	        var entity = entities[entityName];
-
-	        var listView = ngAdmin.setupView(entity, 'list', op)
-	            .listActions(listActions)
-	            .filters(ngAdmin.ngaFieldsFromModel(entityName, searchFields));
-
-	        var creationView = ngAdmin.setupView(entity, 'creation', op);
-	        if (!op.creation.gotoShow) {
-	            creationView.onSubmitSuccess(['progression', 'notification', '$state', 'entry', 'entity', function(progression, notification, $state, entry, entity) {
-	                progression.done();
-	                notification.log(capitalize(entity.name()) + ' ' + entry._identifierValue + ' ' + 'successfully created.', { addnCls: 'humane-flatty-success' });
-	                $state.go($state.get('list'), { entity: entity.name() });
-	                return false;
-	            }]);
-	        }
-
-	        var editionView = ngAdmin.setupView(entity, 'edition', op);
-	        // if set, visit show view
-	        if (!op.edition.gotoShow) {
-	            editionView.onSubmitSuccess(['progression', 'notification', '$state', 'entry', 'entity', function(progression, notification, $state, entry, entity) {
-	                progression.done();
-	                notification.log(capitalize(entity.name()) + ' ' + entry._identifierValue + ' ' + 'successfully edited.', { addnCls: 'humane-flatty-success' });
-	                $state.go($state.get('list'), { entity: entity.name() });
-	                return false;
-	            }]);
-	        }
-
-	        var showView = ngAdmin.setupView(entity, 'show', op);
-	        if (op.show.title) {
-	            showView.title(capitalize(entityName) + ': {{ entry.values.' + op.show.title + ' }}');
-	        }
+	        ['list', 'creation', 'edition', 'show'].map(function(item) {
+	            ngAdmin.setupView(entity, item, op);
+	        });
 	    });
 	};
 
