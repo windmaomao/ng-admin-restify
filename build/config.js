@@ -244,5 +244,15 @@ var options = {
             icon: 'inbox',
             items: ['tag', 'image']
         }
+    ],
+    dashboard: [
+        {
+            title: 'Blog',
+            name: 'post_latest',
+            entity: 'post',
+            fields: ['title', 'author', 'category'],
+            actions: [],
+            order: 0
+        }
     ]
 };

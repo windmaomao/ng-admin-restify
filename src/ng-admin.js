@@ -32,6 +32,9 @@ ngAdmin.create = function(provider, options) {
     if (options.routes) {
         ngAdmin.setupMenus(options.routes);
     }
+    if (options.dashboard) {
+        ngAdmin.setupDashboard(options.dashboard);
+    }
     // return admin instance
     return admin;
 };
@@ -269,7 +272,7 @@ var handleCommonView = function(view, entityName, fields, options) {
 
     // setup view properties
     switch (view._type) {
-        // default:
+        default:
         case 'ListView':
             var actions = options.actions || ['show', 'edit'];
             var filters = options.filters || 'id';
@@ -397,6 +400,21 @@ ngAdmin.setupMenus = function(routes) {
         root.addChild(main);
     });
     admin.menu(root);
+};
+
+// Setup dashboard
+ngAdmin.setupDashboard = function(collections) {
+    var dashboard = nga.dashboard();
+    if (collections) {
+        _.each(collections, function(col) {
+            var entityName = col.entity;
+            var entity = entities[entityName];
+            var collection = nga.collection(entity).name(col.name);
+            handleCommonView(collection, entityName, col.fields, col);
+            dashboard.addCollection(collection);
+        });
+    }
+    admin.dashboard(dashboard);
 };
 
 module.exports = ngAdmin;
