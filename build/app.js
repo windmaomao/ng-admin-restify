@@ -97,14 +97,7 @@
 	    var initNGAdmin = function(nga, options) {
 	        // create an admin application
 	        var app = ngAdmin.create(nga, options);
-	        // app.dashboard(nga.dashboard().template('<dashboard-page></dashboard-page>'));
-	        // create custom header
-	        if (options.auth) {
-	            app.header('<header-partial></header-partial>');
-	        }
-	        // attach the admin application to the DOM and run it
 	        ngAdmin.attach(app);
-
 	        return app;
 	    };
 
@@ -259,8 +252,13 @@
 	    if (options.routes) {
 	        ngAdmin.setupMenus(options.routes);
 	    }
+	    // add dashboard collection
 	    if (options.dashboard) {
 	        ngAdmin.setupDashboard(options.dashboard);
+	    }
+	    // create custom header
+	    if (options.auth) {
+	        admin.header('<header-partial></header-partial>');
 	    }
 	    // return admin instance
 	    return admin;
@@ -631,7 +629,8 @@
 
 	// Setup dashboard
 	ngAdmin.setupDashboard = function(collections) {
-	    var dashboard = nga.dashboard();
+	    var dashboard = nga.dashboard()
+	        .template('<dashboard-page></dashboard-page>');
 	    if (collections) {
 	        _.each(collections, function(col) {
 	            var entityName = col.entity;

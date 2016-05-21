@@ -32,8 +32,13 @@ ngAdmin.create = function(provider, options) {
     if (options.routes) {
         ngAdmin.setupMenus(options.routes);
     }
+    // add dashboard collection
     if (options.dashboard) {
         ngAdmin.setupDashboard(options.dashboard);
+    }
+    // create custom header
+    if (options.auth) {
+        admin.header('<header-partial></header-partial>');
     }
     // return admin instance
     return admin;
@@ -404,7 +409,8 @@ ngAdmin.setupMenus = function(routes) {
 
 // Setup dashboard
 ngAdmin.setupDashboard = function(collections) {
-    var dashboard = nga.dashboard();
+    var dashboard = nga.dashboard()
+        .template('<dashboard-page></dashboard-page>');
     if (collections) {
         _.each(collections, function(col) {
             var entityName = col.entity;
