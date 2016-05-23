@@ -18,7 +18,14 @@ provider.ngAdminRestifyProvider = function(NgAdminConfigurationProvider) {
     var initNGAdmin = function(nga, options) {
         // create an admin application
         var app = ngAdmin.create(nga, options);
+        // app.dashboard(nga.dashboard().template('<dashboard-page></dashboard-page>'));
+        // create custom header
+        if (options.auth) {
+            app.header('<header-partial></header-partial>');
+        }
+        // attach the admin application to the DOM and run it
         ngAdmin.attach(app);
+
         return app;
     };
 

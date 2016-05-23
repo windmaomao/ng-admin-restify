@@ -1,5 +1,5 @@
 var options = {
-    site: 'My Blog',
+    site: 'My Blogs',
     url: '/v1/',
     auth: false,
     rest: {
@@ -247,10 +247,9 @@ var options = {
     ],
     dashboard: [
         {
+            title: 'Blog',
             name: 'post_latest',
             entity: 'post',
-            title: 'Blog',
-            description: 'Welcome to My Blogs.',
             fields: ['title', 'author', 'category'],
             actions: [],
             order: 0

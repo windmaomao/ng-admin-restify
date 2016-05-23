@@ -14,9 +14,6 @@
     <script type="text/javascript">
         angular
             .module('myApp', ['ng-admin-restify'])
-            .directive("dashboardPage", function() {
-                return { restrict: "AE", templateUrl: "dashboard.html" };
-            })
             .config(function(ngAdminRestifyProvider) {
                 var app = ngAdminRestifyProvider.configure(options);
             })
