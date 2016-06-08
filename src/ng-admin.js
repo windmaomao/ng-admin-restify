@@ -166,6 +166,10 @@ var assembleFields = function(fields, editing) {
                     nf = nga.field(field.field);
                     break;
             };
+            // default value
+            if (field.defaultValue) {
+                nf.defaultValue(field.defaultValue);
+            }
             // read-only
             if (field.readOnly) {
                 nf.editable(false);

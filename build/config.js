@@ -89,7 +89,9 @@ var options = {
                     choices: [
                         { label: 'Toy', value: 'toy' },
                         { label: 'Car', value: 'car' },
-                    ]
+                    ],
+                    defaultValue: 'toy',
+                    pinned: true
                 },
                 subCategory: {
                     label: 'Sub',
@@ -110,7 +112,7 @@ var options = {
                 description: 'Blogging',
                 fields: [ 'id', 'title', 'author', 'category', 'subCategory', 'tags', 'url'],
                 actions: ['edit'],
-                filters: ['id']
+                filters: ['id', 'category']
             },
             creation: {
                 description: 'Create a blog'
@@ -122,7 +124,7 @@ var options = {
                 description: 'Blog details'
             },
             search: {
-                fields: ['id']
+                fields: ['id', 'category']
             },
         },
         comment: {
@@ -146,6 +148,9 @@ var options = {
                         dir: 'ASC'
                     },
                     perPage: 200,
+                    attributes: {
+                        value: 1
+                    },
                     pinned: true
                 },
                 createdAt: {
@@ -162,7 +167,9 @@ var options = {
             default: {
                 fields: [ 'id', 'postId', 'body', 'createdAt' ],
             },
-            list: {},
+            list: {
+                filters: ['postId']
+            },
             creation: {},
             edition: {},
             show: {},
