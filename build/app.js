@@ -395,7 +395,11 @@
 	            };
 	            // default value
 	            if (field.defaultValue) {
-	                nf.defaultValue(field.defaultValue);
+	                if (typeof field.defaultVale === "function") {
+	                    nf.defaultValue(field.defaultValue());
+	                } else {
+	                    nf.defaultValue(field.defaultValue);
+	                }
 	            }
 	            // read-only
 	            if (field.readOnly) {

@@ -90,7 +90,7 @@ var options = {
                         { label: 'Toy', value: 'toy' },
                         { label: 'Car', value: 'car' },
                     ],
-                    defaultValue: 'toy',
+                    defaultValue: function() { return 'toy'; },
                     pinned: true
                 },
                 subCategory: {
