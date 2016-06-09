@@ -604,7 +604,9 @@
 	        // create all entity views
 	        var entityName = op.entity || key;
 	        var entity = entities[entityName];
-	        ['list', 'creation', 'edition', 'show'].map(function(item) {
+	        var allViews = ['list', 'creation', 'edition', 'show'];
+	        var views = op.views || allViews;
+	        views.map(function(item) {
 	            ngAdmin.setupView(entity, item, op);
 	        });
 	    });

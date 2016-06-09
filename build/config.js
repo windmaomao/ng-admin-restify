@@ -176,6 +176,7 @@ var options = {
             search: {
                 fields: ['id', 'postId']
             },
+            views: ['list']
         },
         tag: {
             entity: 'tag',
